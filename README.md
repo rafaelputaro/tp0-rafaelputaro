@@ -6,11 +6,19 @@ En caso de que la validación sea exitosa imprimir: `action: test_echo_server | 
 
 El script deberá ubicarse en la raíz del proyecto. Netcat no debe ser instalado en la máquina _host_ y no se puede exponer puertos del servidor para realizar la comunicación (hint: `docker network`). `
 
+### Resolución:
 
 
 
+### Material teórico para el alumno: 
 
-NOTA PARA EL ALUMNO: Instalar netcat (GNU) en Manjaro:
+* Instalar netcat (GNU) en Manjaro:
 ```
 sudo pacman -S netcat
+```
+* Tutorial Netcat: https://www.youtube.com/watch?v=utdXuu4fNQE
+
+* Obtener información de red en Manjaro:
+```
+ip addr
 ```
