@@ -22,3 +22,7 @@ sudo pacman -S netcat
 ```
 ip addr
 ```
+
+
+
+https://lathack.com/senales-y-prioridades-de-procesos-en-linux/
