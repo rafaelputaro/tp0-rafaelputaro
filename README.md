@@ -3,7 +3,7 @@ Modificar el cliente y el servidor para lograr que realizar cambios en el archiv
 
 ## Resolución:
 
-* Arme una carpeta config_files donde he creados un archivo de configuración para el servidor y otro para el cliente con datos diferentes a los originales del enunciado, básicamente cambie los puertos y los pase a modo DEBUG, para que se note al lanzar los contenedores que se están usando otros datos diferentes a las imágenes.
+* Arme una carpeta config_files donde he creado un archivo de configuración para el servidor y otro para el cliente con datos diferentes a los originales del enunciado. Básicamente cambie los puertos y los pase a modo DEBUG, para que se note al lanzar los contenedores que se están usando otros datos diferentes a las imágenes.
 
 * Modifique el docker-compose para que cree volumes para cada app sobre sendos archivos de configuración respectivamente pero como read only.
 
