@@ -1,0 +1,10 @@
+# id: 1
+server:
+  address: "server:12344"
+loop:
+  amount: 5
+  period: "5s"
+log:
+  level: "DEBUG"
+batch:
+  maxAmount: 10
