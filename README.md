@@ -8,21 +8,25 @@ El script deberá ubicarse en la raíz del proyecto. Netcat no debe ser instalad
 
 ### Resolución:
 
+Modifico el docker-compose-dev.yaml para correr el script de validación como un servicio independiente.
 
+### Instrucciones de uso:
 
-### Material teórico para el alumno: 
+Recomiendo el siguiente uso del programa:
 
-* Instalar netcat (GNU) en Manjaro:
+1)  Iniciar los clientes y el servidor con docker-compose:
 ```
-sudo pacman -S netcat
+make docker-compose-up
 ```
-* Tutorial Netcat: https://www.youtube.com/watch?v=utdXuu4fNQE
-
-* Obtener información de red en Manjaro:
+2) Comprobar que se creo el contenedor:
 ```
-ip addr
+docker ps
 ```
-
-
-
-https://lathack.com/senales-y-prioridades-de-procesos-en-linux/
+3) Observar el log donde se podrá verificar el funcionamiento del script de validación:
+```
+make docker-compose-logs
+```
+4) Finalizar el contenedor en otra terminal:
+```
+make docker-compose-down
+```
