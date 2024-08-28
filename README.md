@@ -19,7 +19,7 @@ make docker-compose-up
 ```
 docker ps
 ```
-3) Observar el log donde se podrá verificar el funcionamiento del script de validación:
+3) Observar el log donde se podrán verificar los log's de finalización ante una SIGTERM:
 ```
 make docker-compose-logs
 ```
