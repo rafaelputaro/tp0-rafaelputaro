@@ -1,11 +1,43 @@
-### Ejercicio N°4:
-Modificar servidor y cliente para que ambos sistemas terminen de forma _graceful_ al recibir la signal SIGTERM. Terminar la aplicación de forma _graceful_ implica que todos los _file descriptors_ (entre los que se encuentran archivos, sockets, threads y procesos) deben cerrarse correctamente antes que el thread de la aplicación principal muera. Loguear mensajes en el cierre de cada recurso (hint: Verificar que hace el flag `-t` utilizado en el comando `docker compose down`).
+
+## Parte 2: Repaso de Comunicaciones
+
+Las secciones de repaso del trabajo práctico plantean un caso de uso denominado **Lotería Nacional**. Para la resolución de las mismas deberá utilizarse como base al código fuente provisto en la primera parte, con las modificaciones agregadas en el ejercicio 4.
+
+### Ejercicio N°5:
+Modificar la lógica de negocio tanto de los clientes como del servidor para nuestro nuevo caso de uso.
+
+#### Cliente
+Emulará a una _agencia de quiniela_ que participa del proyecto. Existen 5 agencias. Deberán recibir como variables de entorno los campos que representan la apuesta de una persona: nombre, apellido, DNI, nacimiento, numero apostado (en adelante 'número'). Ej.: `NOMBRE=Santiago Lionel`, `APELLIDO=Lorca`, `DOCUMENTO=30904465`, `NACIMIENTO=1999-03-17` y `NUMERO=7574` respectivamente.
+
+Los campos deben enviarse al servidor para dejar registro de la apuesta. Al recibir la confirmación del servidor se debe imprimir por log: `action: apuesta_enviada | result: success | dni: ${DNI} | numero: ${NUMERO}`.
+
+#### Servidor
+Emulará a la _central de Lotería Nacional_. Deberá recibir los campos de la cada apuesta desde los clientes y almacenar la información mediante la función `store_bet(...)` para control futuro de ganadores. La función `store_bet(...)` es provista por la cátedra y no podrá ser modificada por el alumno.
+Al persistir se debe imprimir por log: `action: apuesta_almacenada | result: success | dni: ${DNI} | numero: ${NUMERO}`.
+
+#### Comunicación:
+Se deberá implementar un módulo de comunicación entre el cliente y el servidor donde se maneje el envío y la recepción de los paquetes, el cual se espera que contemple:
+* Definición de un protocolo para el envío de los mensajes.
+* Serialización de los datos.
+* Correcta separación de responsabilidades entre modelo de dominio y capa de comunicación.
+* Correcto empleo de sockets, incluyendo manejo de errores y evitando los fenómenos conocidos como [_short read y short write_](https://cs61.seas.harvard.edu/site/2018/FileDescriptors/).
 
 ### Resolución:
 
-* Servidor: En "server/common/server.py" creo una función que inicializa una lista donde guardo los sockets de cada cliente e inicializo el método a utilizar cuando se recibe las señales SIGTERM y SINGINT. El método implicado cierra el socket del servidor y el de cada cliente, logueando estos eventos. Cuando un cliente se conecta se da de alta en la lista de clientes y cuando se cierra el socket de un cliente por un error el mismo es quitado de la lista de clientes.
+* Cliente: En el docker-compose-dev.yml agrego los clientes con sus respectivas variables de entorno (con valores inventados por el alumno) como servicios independientes. Luego en la carpeta common creo una serie de entidades que modelan la agencia de lotería, el apostador con sus datos y un módulo destinado al parseo. Luego modifico el módulo cliente para que utilizando estas entidades envíe las apuestas al servidor.
 
-* Cliente: Se define un canal desde el propio "client/main" con el cual se comunica la señal SIGTERM hacia el código del loop de cliente, finalizando y logueando el evento.
+* Servidor: 
+
+* Protocolo: <longitud estructura apuesta><apuesta como una estructura>
+```
+type Apuesta struct {
+	Name     string
+	LastName string
+	DNI      string
+	Birthday string
+	Number   string
+}
+```
 
 ### Instrucciones de uso:
 
@@ -19,7 +51,7 @@ make docker-compose-up
 ```
 docker ps
 ```
-3) Observar el log donde se podrá verificar el funcionamiento del script de validación:
+3) Observar el log donde se podrá verificar lo solicitado:
 ```
 make docker-compose-logs
 ```
@@ -31,7 +63,3 @@ o bien:
 ```
 docker compose -f docker-compose-dev.yaml down -t <tiempo en segundos para shutdown>
 ```
-
-### Teoría:
-
-SIGTERM: Señal que se envía el proceso para comunicarle un apagado “amable” (cerrando conexiones, archivos y limpiando sus propios búfer).

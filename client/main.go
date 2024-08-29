@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 	"strings"
 	"time"
 
@@ -24,7 +22,12 @@ var log = logging.MustGetLogger("log")
 // an error is returned
 func InitConfig() (*viper.Viper, error) {
 	v := viper.New()
-
+	// Read user configuration
+	v.BindEnv("NOMBRE")
+	v.BindEnv("APELLIDO")
+	v.BindEnv("DOCUMENTO")
+	v.BindEnv("NACIMIENTO")
+	v.BindEnv("NUMERO")
 	// Configure viper to read env variables with the CLI_ prefix
 	v.AutomaticEnv()
 	v.SetEnvPrefix("cli")
@@ -105,16 +108,7 @@ func main() {
 	// Print program config with debugging purposes
 	PrintConfig(v)
 
-	clientConfig := common.ClientConfig{
-		ServerAddress: v.GetString("server.address"),
-		ID:            v.GetString("id"),
-		LoopAmount:    v.GetInt("loop.amount"),
-		LoopPeriod:    v.GetDuration("loop.period"),
-	}
+	// Creates Lottery Agency and start communication
+	common.CreateNewLotteryAgency(v)
 
-	client := common.NewClient(clientConfig)
-	signalChannel := make(chan os.Signal, 1)
-	signal.Notify(signalChannel, syscall.SIGTERM)
-	
-	client.StartClientLoop(signalChannel)
 }

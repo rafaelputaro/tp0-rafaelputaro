@@ -2,7 +2,8 @@ package common
 
 import (
 	"bufio"
-	"fmt"
+	"encoding/binary"
+	"io"
 	"net"
 	"os"
 	"time"
@@ -11,6 +12,7 @@ import (
 )
 
 const SIGNAL_ACTION = "received_a_sigterm"
+const SEND_BET_ACTION = "apuesta_enviada"
 
 var log = logging.MustGetLogger("log")
 
@@ -53,38 +55,44 @@ func (c *Client) createClientSocket() error {
 	return nil
 }
 
-// StartClientLoop Send messages to the client until some time threshold is met
-func (c *Client) StartClientLoop(singalChannel chan os.Signal) {
-
-	// There is an autoincremental msgID to identify every message sent
-	// Messages if the message amount threshold has not been surpassed
+// Send the bets to the server
+func (c *Client) SendBets(bets *[]Gambler, singalChannel chan os.Signal) {
 loop:
-	for msgID := 1; msgID <= c.config.LoopAmount; msgID++ {
-		// Create the connection the server in every loop iteration. Send an
+	for _, bet := range *bets {
+
+		// Create the connection the server in every loop iteration
 		c.createClientSocket()
 
-		// TODO: Modify the send to avoid short-write
-		fmt.Fprintf(
-			c.conn,
-			"[CLIENT %v] Message N°%v\n",
-			c.config.ID,
-			msgID,
-		)
-		msg, err := bufio.NewReader(c.conn).ReadString('\n')
-		c.conn.Close()
+		// parse bet
+		parsed, errorOnParse := ParseBet(bet)
 
-		if err != nil {
-			log.Errorf("action: receive_message | result: fail | client_id: %v | error: %v",
+		if errorOnParse != nil {
+			log.Errorf("action: parse_bet | result: fail | client_id: %v | error: %v",
 				c.config.ID,
-				err,
+				errorOnParse,
 			)
-			return
-		}
+		} else {
+			// send message to server: <len><bet parsed>
+			binary.Write(c.conn, binary.BigEndian, uint16(len(parsed)))
+			io.WriteString(c.conn, parsed)
+			_, err := bufio.NewReader(c.conn).ReadString('\n')
+			c.conn.Close()
 
-		log.Infof("action: receive_message | result: success | client_id: %v | msg: %v",
-			c.config.ID,
-			msg,
-		)
+			if err != nil {
+				log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
+					SEND_BET_ACTION,
+					c.config.ID,
+					err,
+				)
+				return
+			}
+
+			log.Infof("action: %v | result: success | dni: %v | numero: %v",
+				SEND_BET_ACTION,
+				bet.DNI,
+				bet.Number,
+			)
+		}
 
 		select {
 		case <-singalChannel:
