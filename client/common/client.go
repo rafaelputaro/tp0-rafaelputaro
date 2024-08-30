@@ -9,7 +9,6 @@ import (
 )
 
 const SIGNAL_ACTION = "received_a_sigterm"
-const SEND_BET_ACTION = "apuesta_enviada"
 
 var log = logging.MustGetLogger("log")
 

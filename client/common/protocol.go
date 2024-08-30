@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+const SEND_BET_ACTION = "apuesta_enviada"
+
 func apply_protocol(bet Bet, c *Client) {
 	// parse bet
 	parsed, errorOnParse := ParseBet(c.config.ID, bet)
