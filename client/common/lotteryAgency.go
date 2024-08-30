@@ -10,8 +10,8 @@ import (
 
 // Lottery Agency Entity that encapsulates how
 type LotteryAgency struct {
-	client  *Client
-	gambler *Gambler
+	client *Client
+	bet    *Bet
 }
 
 func CreateNewLotteryAgency(v *viper.Viper) *LotteryAgency {
@@ -22,14 +22,14 @@ func CreateNewLotteryAgency(v *viper.Viper) *LotteryAgency {
 		LoopPeriod:    v.GetDuration("loop.period"),
 	}
 	agency := LotteryAgency{
-		client:  NewClient(clientConfig),
-		gambler: LoadGambler(v),
+		client: NewClient(clientConfig),
+		bet:    LoadBet(v),
 	}
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, syscall.SIGTERM)
-	// load a gambler
-	var bets []Gambler
-	bets = append(bets, *agency.gambler)
+	// load a bet
+	var bets []Bet
+	bets = append(bets, *agency.bet)
 	// send bet
 	agency.client.SendBets(&bets, signalChannel)
 	return &agency

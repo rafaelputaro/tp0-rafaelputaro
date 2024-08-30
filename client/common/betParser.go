@@ -8,9 +8,10 @@ import (
 const MAX_LEN = 8192
 const MSG_ERROR = "error: message too long"
 
-func doParseBet(bet Gambler) string {
+func doParseBet(idAgency string, bet Bet) string {
 	return fmt.Sprintf(
-		"%s,%s,%s,%s,%v\n",
+		"%s,%s,%s,%s,%s,%v\n",
+		idAgency,
 		bet.Name,
 		bet.LastName,
 		bet.DNI,
@@ -19,8 +20,8 @@ func doParseBet(bet Gambler) string {
 	)
 }
 
-func ParseBet(bet Gambler) (string, error) {
-	parsed := doParseBet(bet)
+func ParseBet(idAgency string, bet Bet) (string, error) {
+	parsed := doParseBet(idAgency, bet)
 	if len(parsed) > MAX_LEN {
 		return "", errors.New(MSG_ERROR)
 	}

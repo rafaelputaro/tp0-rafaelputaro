@@ -24,20 +24,11 @@ Se deberá implementar un módulo de comunicación entre el cliente y el servido
 
 ### Resolución:
 
-* Cliente: En el docker-compose-dev.yml agrego los clientes con sus respectivas variables de entorno (con valores inventados por el alumno) como servicios independientes. Luego en la carpeta common creo una serie de entidades que modelan la agencia de lotería, el apostador con sus datos y un módulo destinado al parseo. Luego modifico el módulo cliente para que utilizando estas entidades envíe las apuestas al servidor.
+* Cliente: En el docker-compose-dev.yml agrego los clientes con sus respectivas variables de entorno (con valores inventados por el alumno) como servicios independientes. Luego en la carpeta common creo una serie de entidades que modelan la agencia de lotería, la apuesta con los datos del apostador, un módulo destinado al parseo y otro a la aplicación del protocolo. Luego modifico el módulo cliente para que utilizando estas entidades envíe las apuestas al servidor y reciba la respuesta de este último.
 
-* Servidor: 
+* Servidor: En la carpeta common creo una entidad que representa la lotería nacional la cual se encarga de respaldar las apuestas con los métodos provistos en utils. Además creo una entidad encargada de aplicar el protocolo de comunicación utilizado por el cliente la cual es utiliza por el server.
 
-* Protocolo: <longitud estructura apuesta><apuesta como una estructura>
-```
-type Apuesta struct {
-	Name     string
-	LastName string
-	DNI      string
-	Birthday string
-	Number   string
-}
-```
+* Protocolo: <longitud estructura apuesta como unsigned int 16><id agencia + apuesta como un string separado por comas>
 
 ### Instrucciones de uso:
 
