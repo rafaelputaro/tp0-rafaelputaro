@@ -2,7 +2,6 @@ package common
 
 import (
 	"net"
-	"os"
 	"time"
 
 	"github.com/op/go-logging"
@@ -51,24 +50,11 @@ func (c *Client) createClientSocket() error {
 	return nil
 }
 
-// Send the bets to the server
-func (c *Client) SendBets(bets *[]Bet, singalChannel chan os.Signal) {
-loop:
-	for _, bet := range *bets {
-
-		// Create the connection the server in every loop iteration
-		c.createClientSocket()
-		apply_protocol(bet, c)
-		// handle a signal
-		select {
-		case <-singalChannel:
-			log.Infof("action: %v | result: success | client_id: %v",
-				SIGNAL_ACTION,
-				c.config.ID,
-			)
-			break loop
-		case <-time.After(c.config.LoopPeriod):
-		}
-	}
-	log.Infof("action: loop_finished | result: success | client_id: %v", c.config.ID)
+// Send the bet to the server
+func (c *Client) SendBet(bet Bet) {
+	// Create the connection the server in every loop iteration
+	c.createClientSocket()
+	apply_protocol(bet, c)
+	c.conn.Close()
+	log.Infof("action: send_finished | result: success | client_id: %v", c.config.ID)
 }

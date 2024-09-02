@@ -4,6 +4,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -27,10 +28,20 @@ func CreateNewLotteryAgency(v *viper.Viper) *LotteryAgency {
 	}
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, syscall.SIGTERM)
-	// load a bet
-	var bets []Bet
-	bets = append(bets, *agency.bet)
 	// send bet
-	agency.client.SendBets(&bets, signalChannel)
+	agency.client.SendBet(*agency.bet)
+	// waiting signal
+loop:
+	for {
+		select {
+		case <-signalChannel:
+			log.Infof("action: %v | result: success | client_id: %v",
+				SIGNAL_ACTION,
+				clientConfig.ID,
+			)
+			break loop
+		case <-time.After(clientConfig.LoopPeriod):
+		}
+	}
 	return &agency
 }
