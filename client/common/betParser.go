@@ -10,7 +10,7 @@ const MSG_ERROR = "error: message too long"
 
 func doParseBet(idAgency string, bet Bet) string {
 	return fmt.Sprintf(
-		"%s,%s,%s,%s,%s,%v\n",
+		"%s,%s,%s,%s,%s,%v",
 		idAgency,
 		bet.Name,
 		bet.LastName,
