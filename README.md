@@ -18,7 +18,7 @@ El servidor, por otro lado, deberá responder con éxito solamente si todas las 
 
 * Servidor: En la carpeta common creo una entidad que representa la lotería nacional la cual se encarga de respaldar las apuestas con los métodos provistos en utils. Además creo una entidad encargada de aplicar el protocolo de comunicación utilizado por el cliente la cual es utiliza por el server.
 
-* Protocolo: <longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>
+* Protocolo: <cantidad de apuestas del batch><longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>;<id agencia + apuesta como un string separado por comas>;..........
 
 ### Instrucciones de uso:
 

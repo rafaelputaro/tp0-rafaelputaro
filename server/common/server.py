@@ -62,7 +62,6 @@ class Server:
         """
         try:
             amount = apply_rcv_protocol(client_sock, self._lottery)
-            #self._lottery.store_bet(bet)
             apply_res_protocol(client_sock, amount)
         except OSError as e:
             logging.error("action: receive_message | result: fail | error: {e}")

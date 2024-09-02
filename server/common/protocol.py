@@ -24,8 +24,12 @@ def apply_rcv_protocol(client_sock, lottery) :
         lottery.store_bet(bet)
     # how many bets
     amount = len(bets_msg)
-    logging.debug(
-        f'action: {ACTION_RECEIVE} | result: success | cantidad: {batch_amount}')
+    if (batch_amount == amount) :
+        logging.info(
+            f'action: {ACTION_RECEIVE} | result: success | cantidad: {batch_amount}')
+    else:
+        logging.error(
+            f'action: {ACTION_RECEIVE} | result: fail | cantidad: {batch_amount}')
     return amount
 
 def apply_res_protocol(client_sock, amount):

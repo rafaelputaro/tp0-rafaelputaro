@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"encoding/binary"
 	"io"
+	"strconv"
+	"strings"
 )
 
 const SEND_BET_ACTION = "apuesta_enviada"
@@ -24,7 +26,7 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 		// how many bytes batch
 		binary.Write(c.conn, binary.BigEndian, uint16(len(parsed)))
 		io.WriteString(c.conn, parsed)
-		_, err := bufio.NewReader(c.conn).ReadString('\n')
+		batch_amount_rcv_str, err := bufio.NewReader(c.conn).ReadString('\n')
 		c.conn.Close()
 		if err != nil {
 			log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
@@ -33,8 +35,27 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 				err,
 			)
 			return index, err
-		}
-		log.Infof("action: %v | result: success | batch_amount: %v", SEND_BET_ACTION, batch_amount_used)
+		} else {
+			var batch_amount_rcv, err_parse = strconv.Atoi(strings.Split(batch_amount_rcv_str, "\n")[0])
+			if err_parse != nil {
+				log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
+					SEND_BET_ACTION,
+					c.config.ID,
+					err_parse,
+				)
+			} else {
+				if batch_amount_rcv == batch_amount_used {
+					log.Infof("action: %v | result: success | batch_amount: %v", SEND_BET_ACTION, batch_amount_used)
+				} else {
+					log.Errorf("action: %v | result: fail | client_id: %v | cantidad_enviada: %v | cantidad_recibida: %v",
+						SEND_BET_ACTION,
+						c.config.ID,
+						batch_amount_used,
+						batch_amount_rcv,
+					)
+				}				
+			}
+		}		
 	}
 	return index + batch_amount_used, nil
 }
