@@ -26,6 +26,8 @@ services:
       - testing_net
     depends_on:
       - server
+    volumes:
+      - ./dataset/agency-1.csv:/agency.csv:ro
       
 networks:
   testing_net:

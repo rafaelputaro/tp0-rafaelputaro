@@ -2,6 +2,7 @@ package common
 
 import (
 	"net"
+	"os"
 	"time"
 
 	"github.com/op/go-logging"
@@ -13,10 +14,11 @@ var log = logging.MustGetLogger("log")
 
 // ClientConfig Configuration used by the client
 type ClientConfig struct {
-	ID            string
-	ServerAddress string
-	LoopAmount    int
-	LoopPeriod    time.Duration
+	ID             string
+	ServerAddress  string
+	LoopAmount     int
+	LoopPeriod     time.Duration
+	BatchMaxAmount int
 }
 
 // Client Entity that encapsulates how
@@ -50,11 +52,25 @@ func (c *Client) createClientSocket() error {
 	return nil
 }
 
-// Send the bet to the server
-func (c *Client) SendBet(bet Bet) {
-	// Create the connection the server in every loop iteration
-	c.createClientSocket()
-	apply_protocol(bet, c)
-	c.conn.Close()
-	log.Infof("action: send_finished | result: success | client_id: %v", c.config.ID)
+// Send the bets to the server
+func (c *Client) SendBetsChunks(bets *[]Bet, singalChannel chan os.Signal) {
+	var index = 0
+loop:
+	for index < len(*bets) {
+		// Create the connection the server in every loop iteration
+		c.createClientSocket()
+		index, _ = apply_bets_protocol(bets, index, c)
+		// handle a signal
+		select {
+		case <-singalChannel:
+			log.Infof("action: %v | result: success | client_id: %v",
+				SIGNAL_ACTION,
+				c.config.ID,
+			)
+			break loop
+		case <-time.After(c.config.LoopPeriod):
+		}
+	}
+	println(c.config.BatchMaxAmount)
+	log.Infof("action: loop_finished | result: success | client_id: %v", c.config.ID)
 }

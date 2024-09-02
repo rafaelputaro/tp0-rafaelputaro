@@ -1,6 +1,7 @@
 import logging
 
 from common.utils import Bet
+from common.national_lottery import NationalLottery
 
 ACTION_RECEIVE = "apuesta recibida"
 
@@ -8,7 +9,9 @@ ACTION_RECEIVE = "apuesta recibida"
 returns:
     * batch amount in case recieve
 """
-def apply_rcv_protocol(client_sock) :
+def apply_rcv_protocol(client_sock, lottery) :
+    # message length
+    batch_amount = int.from_bytes(client_sock.recv(2), byteorder='big')
     # message length
     length = int.from_bytes(client_sock.recv(2), byteorder='big')
     # recive message
@@ -18,11 +21,11 @@ def apply_rcv_protocol(client_sock) :
     # store bets
     for bet_msg in bets_msg:
         bet = Bet(*bet_msg.split(','))
-        #lottery_agency.store_bet(Bet(*msg.split(',')))
+        lottery.store_bet(bet)
     # how many bets
     amount = len(bets_msg)
     logging.debug(
-        f'action: {ACTION_RECEIVE} | result: success | cantidad: {amount}')
+        f'action: {ACTION_RECEIVE} | result: success | cantidad: {batch_amount}')
     return amount
 
 def apply_res_protocol(client_sock, amount):

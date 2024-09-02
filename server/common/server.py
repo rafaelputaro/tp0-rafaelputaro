@@ -61,7 +61,7 @@ class Server:
         client socket will also be closed
         """
         try:
-            amount = apply_rcv_protocol(client_sock)
+            amount = apply_rcv_protocol(client_sock, self._lottery)
             #self._lottery.store_bet(bet)
             apply_res_protocol(client_sock, amount)
         except OSError as e:
