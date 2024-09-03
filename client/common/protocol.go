@@ -9,8 +9,10 @@ import (
 )
 
 const BETS_TAG = "bets"
-const ASK_TAG = "asks"
+const ASKS_TAG = "asks"
+const WINNERS_TAG = "winners"
 const SEND_BET_ACTION = "apuesta_enviada"
+const ASK_WINNERS_ACTION = "consulta_ganadores"
 
 func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 	// parse bets
@@ -20,6 +22,7 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 			c.config.ID,
 			errorOnParse,
 		)
+		c.conn.Close()
 		return index, errorOnParse
 	} else {
 		// send message to server
@@ -62,4 +65,33 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 		}
 	}
 	return index + batch_amount_used, nil
+}
+
+func apply_winners_protocol(agencyId string, c *Client) error {
+	// send message to server
+	// send asks tag
+	io.WriteString(c.conn, ASKS_TAG)
+	// send leng id agency
+	binary.Write(c.conn, binary.BigEndian, uint16(len(agencyId)))
+	// send id agency
+	io.WriteString(c.conn, agencyId)
+	// process response
+	response, err := bufio.NewReader(c.conn).ReadString('\n')
+	if err == nil {
+		if response == "winners" {
+			println("Respuesta Servidor:", response)
+		} else {
+			println("Respuesta Servidor:", response)
+		}
+		c.conn.Close()
+		return nil
+	} else {
+		log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
+			ASK_WINNERS_ACTION,
+			c.config.ID,
+			err,
+		)
+		c.conn.Close()
+		return err
+	}
 }

@@ -15,7 +15,21 @@ El servidor deberá esperar la notificación de las 5 agencias para considerar q
 
 * Servidor: En el servidor se realizan unos pocos cambios ya que solamente se adapta al nuevo formato del protocolo y los mensajes pedidos para cada escenario.
 
-* Protocolo: <Tipo consulta "bets" o "ask"><cantidad de apuestas del batch><longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>;<id agencia + apuesta como un string separado por comas>;..........
+* Protocolo envío de datos desde cliente: 
+
+    * <Tipo consulta "bets"><cantidad de apuestas del batch><longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>;<id agencia + apuesta como un string separado por comas>;..........
+
+    * <Tipo consulta "asks"><longitud id><"agency id">
+
+* Protocolo respuesta servidor:
+
+    * Respuesta envío de batchs: <"cantidad apuestas recibidas">
+    
+    * Respuesta al recibir "asks":
+
+        * Faltan agencias por finalizar: Servidor responde <"bets\n">
+
+        * Terminaron todas las agencias: Servidor responde <"winners\n"><"cantidad de ganadores N\n"><"DNI ganador 1 como string\n">.... 
 
 ### Instrucciones de uso:
 

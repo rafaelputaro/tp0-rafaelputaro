@@ -9,7 +9,7 @@ ACTION_RECEIVE = "apuesta recibida"
 returns:
     * batch amount in case recieve
 """
-def apply_rcv_bet_protocol(client_sock, lottery) :
+def apply_rcv_bet_protocol(client_sock, lottery: NationalLottery) -> int:
     # message length
     batch_amount = int.from_bytes(client_sock.recv(2), byteorder='big')
     # message length
@@ -36,7 +36,16 @@ def apply_res_bet_protocol(client_sock, amount):
 
     client_sock.send("{}\n".format(amount).encode('utf-8'))
 
-def apply_rcv_ask_protocol(client_sock) :
-    # message length
-    agency_id = int.from_bytes(client_sock.recv(2), byteorder='big')
-    return agency_id
+def apply_ask_protocol(client_sock, lottery: NationalLottery) :
+    # id agency length
+    length = int.from_bytes(client_sock.recv(2), byteorder='big')
+    # id agency
+    agency_id = client_sock.recv(length).decode('utf-8').strip()
+    # notify ends
+    #lottery.notify_agency_ends(agency_id)
+    # ¿lottery time?
+    
+    #if lottery.all_agencies_ended() :
+    client_sock.send("{}\n".format("bets").encode('utf-8'))
+    #else
+     

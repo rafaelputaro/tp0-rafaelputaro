@@ -76,11 +76,12 @@ loop:
 }
 
 // Send the bets to the server
-func (c *Client) AskForWinners(signalChannel chan os.Signal) {
+func (c *Client) AskForWinners(agencyId string, signalChannel chan os.Signal) {
 	// Create the connection the server in every loop iteration
 	c.createClientSocket()
 loop:
 	for {
+		apply_winners_protocol(agencyId, c)
 		// handle a signal
 		select {
 		case <-signalChannel:
@@ -92,6 +93,5 @@ loop:
 		case <-time.After(c.config.LoopPeriod):
 		}
 	}
-	println(c.config.BatchMaxAmount)
-	log.Infof("action: loop_finished | result: success | client_id: %v", c.config.ID)
+	log.Infof("action: loop_winners_finished | result: success | client_id: %v", c.config.ID)
 }

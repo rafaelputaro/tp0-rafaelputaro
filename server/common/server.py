@@ -3,7 +3,7 @@ import logging
 import sys
 import signal
 from common.national_lottery import NationalLottery
-from common.protocol import apply_rcv_ask_protocol, apply_rcv_bet_protocol, apply_res_bet_protocol
+from common.protocol import apply_ask_protocol, apply_rcv_bet_protocol, apply_res_bet_protocol
 
 SIGNAL_HANDLER_ACTION="received_a_signal"
 CLOSE_SERVER_SOCKET_ACTION="closing_server_socket"
@@ -66,9 +66,9 @@ class Server:
             tag = client_sock.recv(SIZE_TAG).decode('utf-8').strip()
             if tag == "bets":
                 amount = apply_rcv_bet_protocol(client_sock, self._lottery)
-                apply_res_bet_protocol(client_sock, amount)    
+                apply_res_bet_protocol(client_sock, amount)
             if tag == "asks":
-                apply_rcv_ask_protocol(client_sock)
+                apply_ask_protocol(client_sock, self._lottery)
         except OSError as e:
             logging.error("action: receive_message | result: fail | error: {e}")
         finally:
