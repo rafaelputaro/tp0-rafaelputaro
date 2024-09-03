@@ -14,9 +14,9 @@ El servidor, por otro lado, deberá responder con éxito solamente si todas las 
 
 ### Resolución:
 
-* Cliente: En el docker-compose-dev.yml agrego los clientes con sus respectivas variables de entorno (con valores inventados por el alumno) como servicios independientes. Luego en la carpeta common creo una serie de entidades que modelan la agencia de lotería, la apuesta con los datos del apostador, un módulo destinado al parseo y otro a la aplicación del protocolo. Luego modifico el módulo cliente para que utilizando estas entidades envíe las apuestas al servidor y reciba la respuesta de este último.
+* Cliente: En el docker-compose-dev.yml agrego la configuración de cada agencia como servicios independientes. Desde la entidad LoterreyAgency levanto en memoria todas las apuestas para una agencia dada y como en el ejercicio anterior entre cliente, betParser y protocol se reparten la responsabilidad de enviar los lotes de apuestas al servidor con un tamaño de batch adapativo evitando superar los 8k.
 
-* Servidor: En la carpeta common creo una entidad que representa la lotería nacional la cual se encarga de respaldar las apuestas con los métodos provistos en utils. Además creo una entidad encargada de aplicar el protocolo de comunicación utilizado por el cliente la cual es utiliza por el server.
+* Servidor: En el servidor se realizan unos pocos cambios ya que solamente se adapta al nuevo formato del protocolo y los mensajes pedidos para cada escenario.
 
 * Protocolo: <cantidad de apuestas del batch><longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>;<id agencia + apuesta como un string separado por comas>;..........
 

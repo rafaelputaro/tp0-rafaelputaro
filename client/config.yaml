@@ -3,12 +3,12 @@ server:
   address: "server:12345"
 loop:
   amount: 5
-  period: "10ms"
-  #"5s"
+  period: "5s"
+  # "10ms" "5s"
 log:
   level: "INFO"
 dataset:
   file: "./agency.csv"
 batch:
-  maxAmount: 75
+  maxAmount: 10
   #33 75 10
