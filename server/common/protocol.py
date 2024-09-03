@@ -9,7 +9,7 @@ ACTION_RECEIVE = "apuesta recibida"
 returns:
     * batch amount in case recieve
 """
-def apply_rcv_protocol(client_sock, lottery) :
+def apply_rcv_bet_protocol(client_sock, lottery) :
     # message length
     batch_amount = int.from_bytes(client_sock.recv(2), byteorder='big')
     # message length
@@ -32,6 +32,11 @@ def apply_rcv_protocol(client_sock, lottery) :
             f'action: {ACTION_RECEIVE} | result: fail | cantidad: {batch_amount}')
     return amount
 
-def apply_res_protocol(client_sock, amount):
+def apply_res_bet_protocol(client_sock, amount):
 
     client_sock.send("{}\n".format(amount).encode('utf-8'))
+
+def apply_rcv_ask_protocol(client_sock) :
+    # message length
+    agency_id = int.from_bytes(client_sock.recv(2), byteorder='big')
+    return agency_id

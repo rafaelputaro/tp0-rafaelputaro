@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const BETS_TAG = "bets"
+const ASK_TAG = "asks"
 const SEND_BET_ACTION = "apuesta_enviada"
 
 func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
@@ -21,6 +23,8 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 		return index, errorOnParse
 	} else {
 		// send message to server
+		// send tag
+		io.WriteString(c.conn, BETS_TAG)
 		// how many bets in the batch
 		binary.Write(c.conn, binary.BigEndian, uint16(batch_amount_used))
 		// how many bytes batch
@@ -53,9 +57,9 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 						batch_amount_used,
 						batch_amount_rcv,
 					)
-				}				
+				}
 			}
-		}		
+		}
 	}
 	return index + batch_amount_used, nil
 }

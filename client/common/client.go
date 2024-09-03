@@ -53,7 +53,7 @@ func (c *Client) createClientSocket() error {
 }
 
 // Send the bets to the server
-func (c *Client) SendBetsChunks(bets *[]Bet, singalChannel chan os.Signal) {
+func (c *Client) SendBetsChunks(bets *[]Bet, signalChannel chan os.Signal) {
 	var index = 0
 loop:
 	for index < len(*bets) {
@@ -62,7 +62,28 @@ loop:
 		index, _ = apply_bets_protocol(bets, index, c)
 		// handle a signal
 		select {
-		case <-singalChannel:
+		case <-signalChannel:
+			log.Infof("action: %v | result: success | client_id: %v",
+				SIGNAL_ACTION,
+				c.config.ID,
+			)
+			break loop
+		case <-time.After(c.config.LoopPeriod):
+		}
+	}
+	println(c.config.BatchMaxAmount)
+	log.Infof("action: loop_finished | result: success | client_id: %v", c.config.ID)
+}
+
+// Send the bets to the server
+func (c *Client) AskForWinners(signalChannel chan os.Signal) {
+	// Create the connection the server in every loop iteration
+	c.createClientSocket()
+loop:
+	for {
+		// handle a signal
+		select {
+		case <-signalChannel:
 			log.Infof("action: %v | result: success | client_id: %v",
 				SIGNAL_ACTION,
 				c.config.ID,
