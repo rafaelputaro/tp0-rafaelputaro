@@ -2,6 +2,7 @@ import socket
 import logging
 import sys
 import signal
+import multiprocessing
 from common.national_lottery import NationalLottery
 from common.protocol import apply_ask_protocol, apply_rcv_bet_protocol, apply_res_bet_protocol
 
@@ -14,10 +15,12 @@ class Server:
     def __init__(self, port, listen_backlog):
         # Initialize server socket
         self._server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._lottery = NationalLottery()
+        self._lottery = NationalLottery() #wrapper con lock para lottery
         self._server_socket.bind(('', port))
         self._server_socket.listen(listen_backlog)
         self.__init_sign_handling()
+        self._childs_processses = []
+        self._processes_manager = multiprocessing.Manager()
 
     """
     Inicialización de manejo de señales

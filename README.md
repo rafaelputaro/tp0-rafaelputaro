@@ -1,13 +1,12 @@
 
-## Parte 2: Repaso de Comunicaciones
+## Parte 3: Repaso de Concurrencia
 
-Las secciones de repaso del trabajo práctico plantean un caso de uso denominado **Lotería Nacional**. Para la resolución de las mismas deberá utilizarse como base al código fuente provisto en la primera parte, con las modificaciones agregadas en el ejercicio 4.
+## Ejercicio N°8:
 
-## Ejercicio N°7:
+Modificar el servidor para que permita aceptar conexiones y procesar mensajes en paralelo. En este ejercicio es importante considerar los mecanismos de sincronización a utilizar para el correcto funcionamiento de la persistencia.
 
-Modificar los clientes para que notifiquen al servidor al finalizar con el envío de todas las apuestas y así proceder con el sorteo. Inmediatamente después de la notificacion, los clientes consultarán la lista de ganadores del sorteo correspondientes a su agencia. Una vez el cliente obtenga los resultados, deberá imprimir por log: action: consulta_ganadores | result: success | cant_ganadores: ${CANT}.
+En caso de que el alumno implemente el servidor Python utilizando multithreading, deberán tenerse en cuenta las limitaciones propias del lenguaje.
 
-El servidor deberá esperar la notificación de las 5 agencias para considerar que se realizó el sorteo e imprimir por log: action: sorteo | result: success. Luego de este evento, podrá verificar cada apuesta con las funciones load_bets(...) y has_won(...) y retornar los DNI de los ganadores de la agencia en cuestión. Antes del sorteo, no podrá responder consultas por la lista de ganadores. Las funciones load_bets(...) y has_won(...) son provistas por la cátedra y no podrán ser modificadas por el alumno.
 
 ### Resolución: TODO ADAPTAR A LOS NUEVOS CAMBIOS
 
@@ -55,3 +54,11 @@ o bien:
 ```
 docker compose -f docker-compose-dev.yaml down -t <tiempo en segundos para shutdown>
 ```
+
+Fuentes:
+
+https://wiki.python.org/moin/GlobalInterpreterLock
+
+https://docs.python.org/es/dev/library/threading.html
+
+https://docs.python.org/3/library/multiprocessing.html
