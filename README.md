@@ -9,7 +9,7 @@ Modificar los clientes para que notifiquen al servidor al finalizar con el enví
 
 El servidor deberá esperar la notificación de las 5 agencias para considerar que se realizó el sorteo e imprimir por log: action: sorteo | result: success. Luego de este evento, podrá verificar cada apuesta con las funciones load_bets(...) y has_won(...) y retornar los DNI de los ganadores de la agencia en cuestión. Antes del sorteo, no podrá responder consultas por la lista de ganadores. Las funciones load_bets(...) y has_won(...) son provistas por la cátedra y no podrán ser modificadas por el alumno.
 
-### Resolución: TODO ADAPTAR A LOS NUEVOS CAMBIOS
+### Resolución: 
 
 * Cliente: Se extiende del ejercicio anterior agregando la inclusión de los tags del protocolo y el polling para la consulta de ganadores.
 
