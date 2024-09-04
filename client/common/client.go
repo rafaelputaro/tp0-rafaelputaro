@@ -9,6 +9,7 @@ import (
 )
 
 const SIGNAL_ACTION = "received_a_sigterm"
+const ACTION_WINNER_PROTOCOL = "consultar_ganadores"
 
 var log = logging.MustGetLogger("log")
 
@@ -77,11 +78,22 @@ loop:
 
 // Send the bets to the server
 func (c *Client) AskForWinners(agencyId string, signalChannel chan os.Signal) {
-	// Create the connection the server in every loop iteration
-	c.createClientSocket()
 loop:
 	for {
-		apply_winners_protocol(agencyId, c)
+		// Create the connection the server in every loop iteration
+		c.createClientSocket()
+		err, winners_rcv := apply_winners_protocol(agencyId, c)
+		if err != nil {
+			log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
+				ACTION_WINNER_PROTOCOL,
+				c.config.ID,
+				err,
+			)
+			break loop
+		}
+		if winners_rcv {
+			break loop
+		}
 		// handle a signal
 		select {
 		case <-signalChannel:

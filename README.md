@@ -11,13 +11,13 @@ El servidor deberá esperar la notificación de las 5 agencias para considerar q
 
 ### Resolución: TODO ADAPTAR A LOS NUEVOS CAMBIOS
 
-* Cliente: En el docker-compose-dev.yml agrego la configuración de cada agencia como servicios independientes. Desde la entidad LoterreyAgency levanto en memoria todas las apuestas para una agencia dada y como en el ejercicio anterior entre cliente, betParser y protocol se reparten la responsabilidad de enviar los lotes de apuestas al servidor con un tamaño de batch adapativo evitando superar los 8k.
+* Cliente: Se extiende del ejercicio anterior agregando la inclusión de los tags del protocolo y el polling para la consulta de ganadores.
 
-* Servidor: En el servidor se realizan unos pocos cambios ya que solamente se adapta al nuevo formato del protocolo y los mensajes pedidos para cada escenario.
+* Servidor: En el servidor se realizan unos pocos cambios que implican el manejo de los tags del nuevo protocolo y la respuesta ante el polling. Internamente guarda un conjunto con las agencias que ya terminaron (evento inferido a través de que ya han hecho una consulta de ganadores) para responder con la lista de ganadores cuando ya no se ralicen más apuestas.
 
 * Protocolo envío de datos desde cliente: 
 
-    * <Tipo consulta "bets"><cantidad de apuestas del batch><longitud en bytes mensaje><id agencia + apuesta como un string separado por comas>;<id agencia + apuesta como un string separado por comas>;..........
+    * <Tipo consulta "bets"><"cantidad de apuestas del batch"><longitud en bytes mensaje><"id agencia + apuesta como un string separado por comas">;<"id agencia 1 + apuesta 1 como un string separado por comas">;..........<.......>
 
     * <Tipo consulta "asks"><longitud id><"agency id">
 
@@ -29,7 +29,7 @@ El servidor deberá esperar la notificación de las 5 agencias para considerar q
 
         * Faltan agencias por finalizar: Servidor responde <"bets\n">
 
-        * Terminaron todas las agencias: Servidor responde <"winners\n"><"cantidad de ganadores N\n"><"DNI ganador 1 como string\n">.... 
+        * Terminaron todas las agencias: Servidor responde <"winners\n"><"DNI ganador 1 como string\n">,.... 
 
 ### Instrucciones de uso:
 

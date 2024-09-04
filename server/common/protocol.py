@@ -42,10 +42,12 @@ def apply_ask_protocol(client_sock, lottery: NationalLottery) :
     # id agency
     agency_id = client_sock.recv(length).decode('utf-8').strip()
     # notify ends
-    #lottery.notify_agency_ends(agency_id)
+    lottery.notify_agency_ends(agency_id)
     # ¿lottery time?
-    
-    #if lottery.all_agencies_ended() :
-    client_sock.send("{}\n".format("bets").encode('utf-8'))
-    #else
+    if lottery.all_agencies_ended() :
+        client_sock.send("{}\n".format("winners").encode('utf-8'))
+        winners: list[str] = lottery.get_winners(agency_id)
+        client_sock.send("{}\n".format(','.join(winners)).encode('utf-8'))
+    else :
+        client_sock.send("{}\n".format("bets").encode('utf-8'))
      

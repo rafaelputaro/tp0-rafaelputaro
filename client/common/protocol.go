@@ -67,7 +67,8 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 	return index + batch_amount_used, nil
 }
 
-func apply_winners_protocol(agencyId string, c *Client) error {
+// returns true if lottery sends winner's
+func apply_winners_protocol(agencyId string, c *Client) (error, bool) {
 	// send message to server
 	// send asks tag
 	io.WriteString(c.conn, ASKS_TAG)
@@ -78,13 +79,18 @@ func apply_winners_protocol(agencyId string, c *Client) error {
 	// process response
 	response, err := bufio.NewReader(c.conn).ReadString('\n')
 	if err == nil {
-		if response == "winners" {
-			println("Respuesta Servidor:", response)
-		} else {
-			println("Respuesta Servidor:", response)
+		var winners_rcv bool = false
+		if strings.TrimRight(response, "\n") == "winners" {
+			var winners, error_rcv_winners = rcv_winners(c)
+			log.Infof("action: %v | result: success | cant_ganadores: %v",
+				ASK_WINNERS_ACTION,
+				len(winners))
+			winners_rcv = true
+			c.conn.Close()
+			return error_rcv_winners, winners_rcv
 		}
 		c.conn.Close()
-		return nil
+		return nil, winners_rcv
 	} else {
 		log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
 			ASK_WINNERS_ACTION,
@@ -92,6 +98,16 @@ func apply_winners_protocol(agencyId string, c *Client) error {
 			err,
 		)
 		c.conn.Close()
-		return err
+		return err, false
 	}
+}
+
+func rcv_winners(c *Client) ([]string, error) {
+	var winners []string
+	msg, err := bufio.NewReader(c.conn).ReadString('\n')
+	if err == nil {
+		msg = strings.TrimSpace(msg)
+		winners = strings.Split(msg, ",")
+	}
+	return winners, err
 }
