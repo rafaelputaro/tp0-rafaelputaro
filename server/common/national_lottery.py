@@ -7,18 +7,22 @@ ACTION_STORE = 'apuesta_almacenada'
 MAX_AGENCIES = 5
 
 class NationalLottery:
-    def __init__(self):
+    def __init__(self, lock_store_bet, lock_notify_agency_ends):
         self._agencies_ended = set()
+        self._lock_store_bet = lock_store_bet
+        self._lock_notify_agency_ends = lock_notify_agency_ends
        
     def store_bet(self, bet: Bet):
         logging.info(f'action: {ACTION_STORE} | result: success | dni: {bet.document} | numero: {bet.number}')       
         self.store_bets([bet])
 
     def store_bets(self, bets):
-        do_store_bets(bets)
+        with self._lock_store_bet:
+            do_store_bets(bets)
         
     def notify_agency_ends(self, agency: str) :
-        return self._agencies_ended.add(agency)
+        with self._lock_notify_agency_ends:
+            self._agencies_ended.add(agency)
     
     def all_agencies_ended(self) -> bool:
         return len(self._agencies_ended) >= MAX_AGENCIES

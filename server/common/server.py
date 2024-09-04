@@ -9,24 +9,25 @@ from common.protocol import apply_ask_protocol, apply_rcv_bet_protocol, apply_re
 SIGNAL_HANDLER_ACTION="received_a_signal"
 CLOSE_SERVER_SOCKET_ACTION="closing_server_socket"
 CLOSE_SOCKET_ACTION="closing_a_client_socket"
+JOIN_CHILD_ACTION="join_child_process"
 SIZE_TAG = 4
 
 class Server:
     def __init__(self, port, listen_backlog):
         # Initialize server socket
         self._server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._lottery = NationalLottery() #wrapper con lock para lottery
         self._server_socket.bind(('', port))
         self._server_socket.listen(listen_backlog)
         self.__init_sign_handling()
         self._childs_processses = []
         self._processes_manager = multiprocessing.Manager()
+        self._lottery = NationalLottery(self._processes_manager.Lock(), self._processes_manager.Lock())
 
     """
     Inicialización de manejo de señales
     """
     def __init_sign_handling(self):
-        self._clients_sockets=[]
+        signal.signal(signal.SIGINT, self.__handle_a_signal)
         signal.signal(signal.SIGTERM, self.__handle_a_signal)
 
     """
@@ -36,9 +37,9 @@ class Server:
         logging.info(f'action: {SIGNAL_HANDLER_ACTION} | signal_number: {signal_number}')
         self._server_socket.close()
         logging.debug(f'action: {CLOSE_SERVER_SOCKET_ACTION} | result: sucess')
-        for socket in self._clients_sockets:
-            socket.close()
-            logging.debug(f'action: {CLOSE_SOCKET_ACTION} | result: sucess')
+        for child in self._childs_processses:
+            child.join()
+            logging.debug(f'action: {JOIN_CHILD_ACTION} | result: sucess')
         sys.exit(0)
 
     def run(self):
@@ -54,8 +55,10 @@ class Server:
         # the server
         while True:
             client_sock = self.__accept_new_connection()
-            self._clients_sockets.append(client_sock)
-            self.__handle_client_connection(client_sock)
+            process = multiprocessing.Process(
+                target=self.__handle_client_connection, args=(client_sock,))
+            process.start()
+            self._childs_processses.append(process)            
 
     def __handle_client_connection(self, client_sock):
         """
@@ -76,7 +79,6 @@ class Server:
             logging.error("action: receive_message | result: fail | error: {e}")
         finally:
             client_sock.close()
-            self._clients_sockets.remove(client_sock)
 
     def __accept_new_connection(self):
         """

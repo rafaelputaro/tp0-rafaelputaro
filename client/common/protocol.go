@@ -22,7 +22,7 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 			c.config.ID,
 			errorOnParse,
 		)
-		c.conn.Close()
+
 		return index, errorOnParse
 	} else {
 		// send message to server
@@ -34,13 +34,13 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 		binary.Write(c.conn, binary.BigEndian, uint16(len(parsed)))
 		io.WriteString(c.conn, parsed)
 		batch_amount_rcv_str, err := bufio.NewReader(c.conn).ReadString('\n')
-		c.conn.Close()
 		if err != nil {
 			log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
 				SEND_BET_ACTION,
 				c.config.ID,
 				err,
 			)
+
 			return index, err
 		} else {
 			var batch_amount_rcv, err_parse = strconv.Atoi(strings.Split(batch_amount_rcv_str, "\n")[0])
@@ -50,6 +50,7 @@ func apply_bets_protocol(bets *[]Bet, index int, c *Client) (int, error) {
 					c.config.ID,
 					err_parse,
 				)
+
 			} else {
 				if batch_amount_rcv == batch_amount_used {
 					log.Infof("action: %v | result: success | batch_amount: %v", SEND_BET_ACTION, batch_amount_used)

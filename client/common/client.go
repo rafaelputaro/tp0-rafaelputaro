@@ -1,6 +1,8 @@
 package common
 
 import (
+	"encoding/binary"
+	"io"
 	"net"
 	"os"
 	"time"
@@ -56,6 +58,7 @@ func (c *Client) createClientSocket() error {
 // Send the bets to the server
 func (c *Client) SendBetsChunks(bets *[]Bet, signalChannel chan os.Signal) {
 	var index = 0
+
 loop:
 	for index < len(*bets) {
 		// Create the connection the server in every loop iteration
@@ -72,7 +75,10 @@ loop:
 		case <-time.After(c.config.LoopPeriod):
 		}
 	}
-	println(c.config.BatchMaxAmount)
+	CLOSE_MSG := "CLOSE"
+	binary.Write(c.conn, binary.BigEndian, uint16(len(CLOSE_MSG)))
+	io.WriteString(c.conn, CLOSE_MSG)
+	c.conn.Close()
 	log.Infof("action: loop_finished | result: success | client_id: %v", c.config.ID)
 }
 
@@ -82,6 +88,7 @@ loop:
 	for {
 		// Create the connection the server in every loop iteration
 		c.createClientSocket()
+
 		err, winners_rcv := apply_winners_protocol(agencyId, c)
 		if err != nil {
 			log.Errorf("action: %v | result: fail | client_id: %v | error: %v",
