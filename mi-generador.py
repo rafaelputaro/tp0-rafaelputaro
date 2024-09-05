@@ -8,8 +8,8 @@ FOOTER = 'networks:\n  testing_net:\n    ipam:\n      driver: default\n      con
 def do_generate_compose_fyle(args):
     file = open(args["file"], "w+")
     file.write(HEADER)
-    for client_id in range(1, int(args["clients"])+1):
-        file.write(generate_client_code(client_id))
+    for client_id in range(0, int(args["clients"])):
+        file.write(generate_client_code(client_id+1))
     file.write(VALIDATE)
     file.write(FOOTER)
     file.close()
