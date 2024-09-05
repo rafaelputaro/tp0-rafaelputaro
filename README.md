@@ -12,21 +12,36 @@ Modifico el docker-compose-dev.yaml para correr el script de validación como un
 
 ### Instrucciones de uso:
 
-Recomiendo el siguiente uso del programa:
-
-1)  Iniciar los clientes y el servidor con docker-compose:
+1) Crear archivo docker-compose:
+```
+. generar-compose.sh docker-compose-dev.yaml <nro clientes>
+```
+2)  Iniciar los clientes y el servidor con docker-compose:
 ```
 make docker-compose-up
 ```
-2) Comprobar que se creo el contenedor:
+3) Comprobar que se creo el contenedor:
 ```
 docker ps
 ```
-3) Observar el log donde se podrá verificar el funcionamiento del script de validación:
+4) Observar el log donde se podrá verificar el funcionamiento del script de validación:
 ```
 make docker-compose-logs
 ```
-4) Finalizar el contenedor en otra terminal:
+5) Finalizar el contenedor en otra terminal:
 ```
 make docker-compose-down
 ```
+## Tests (para el alumno)
+
+Máquina del trabajo:
+
+Sin logs
+```
+REPO_PATH=/home/putaro/Workspace/tp0 pytest
+```
+Con logs:
+```
+REPO_PATH=/home/putaro/Workspace/tp0 pytest -s
+```
+NOTA: Paso el test.
