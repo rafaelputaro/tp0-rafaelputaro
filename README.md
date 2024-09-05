@@ -3,9 +3,7 @@ Modificar el cliente y el servidor para lograr que realizar cambios en el archiv
 
 ## Resolución:
 
-* Arme una carpeta config_files donde he creado un archivo de configuración para el servidor y otro para el cliente con datos diferentes a los originales del enunciado. Básicamente cambie los puertos y los pase a modo DEBUG, para que se note al lanzar los contenedores que se están usando otros datos diferentes a las imágenes.
-
-* Modifique el docker-compose para que cree volumes para cada app sobre sendos archivos de configuración respectivamente pero como read only.
+* Modifique el generador de docker-compose para que cree volumes para cada tipo de servicio (cliente y servidor) sobre los archivos de configuración.
 
 ## Instrucciones:
 
@@ -21,7 +19,7 @@ make docker-compose-up
 ```
 docker ps
 ```
-4) Observar el log. En este punto verificar que se están utilizando los puertos 12344 y modo DEBUG en vez 12345 y modo INFO:
+4) Observar en el log el resultado de las modificaciones en los archivos de configuración:
 ```
 make docker-compose-logs
 ```
