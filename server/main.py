@@ -33,13 +33,13 @@ def initialize_config():
 
     return config_params
 
-
+ 
 def main():
     config_params = initialize_config()
-    logging_level = config_params["logging_level"]
+    logging_level = config_params["logging_level"] 
     port = config_params["port"]
     listen_backlog = config_params["listen_backlog"]
-
+    
     initialize_log(logging_level)
 
     # Log config parameters at the beginning of the program to verify the configuration
