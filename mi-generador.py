@@ -13,7 +13,7 @@ def do_generate_compose_fyle(args):
     file.close()
 
 def generate_client_code(client_id):
-    return f'  client{client_id}:\n    container_name: client{client_id}\n    image: client:latest\n    entrypoint: /client\n    environment:\n      - CLI_LOG_LEVEL=DEBUG\n    networks:\n      - testing_net\n    depends_on:\n      - server\n    volumes:\n      - ./client/config.yaml:/config.yaml\n'
+    return f'  client{client_id}:\n    container_name: client{client_id}\n    image: client:latest\n    entrypoint: /client\n    environment:\n      - CLI_ID={client_id}\n    networks:\n      - testing_net\n    depends_on:\n      - server\n    volumes:\n      - ./client/config.yaml:/config.yaml\n'
 
 def generate_compose_fyle():
     args = parse_args()
