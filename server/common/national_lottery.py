@@ -7,10 +7,10 @@ ACTION_STORE = 'apuesta_almacenada'
 MAX_AGENCIES = 5
 
 class NationalLottery:
-    def __init__(self, lock_store_bet, lock_notify_agency_ends):
-        self._agencies_ended = set()
+    def __init__(self, lock_store_bet, lock_agencies_ended, shared_agencies_data):
+        self._shared_agencies_data = shared_agencies_data
         self._lock_store_bet = lock_store_bet
-        self._lock_notify_agency_ends = lock_notify_agency_ends
+        self._lock_agencies_ended = lock_agencies_ended
        
     def store_bet(self, bet: Bet):
         logging.info(f'action: {ACTION_STORE} | result: success | dni: {bet.document} | numero: {bet.number}')       
@@ -21,11 +21,14 @@ class NationalLottery:
             do_store_bets(bets)
         
     def notify_agency_ends(self, agency: str) :
-        with self._lock_notify_agency_ends:
-            self._agencies_ended.add(agency)
+        with self._lock_agencies_ended:
+            if agency not in self._shared_agencies_data['agencies_ended']:
+                self._shared_agencies_data['agencies_ended'] = self._shared_agencies_data['agencies_ended'] + [agency]
+                self._shared_agencies_data['all_agencies_ended'] = len(self._shared_agencies_data['agencies_ended']) >= MAX_AGENCIES
     
     def all_agencies_ended(self) -> bool:
-        return len(self._agencies_ended) >= MAX_AGENCIES
+        with self._lock_agencies_ended:
+            return self._shared_agencies_data['all_agencies_ended']
 
     def get_winners(self, agency_id) -> list[str]:
         winners: list[str] = []

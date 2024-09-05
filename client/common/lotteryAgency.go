@@ -29,6 +29,6 @@ func CreateNewLotteryAgency(v *viper.Viper) *LotteryAgency {
 	signalChannel := make(chan os.Signal, 1)
 	signal.Notify(signalChannel, syscall.SIGTERM)
 	agency.client.SendBetsChunks(agency.bets, signalChannel)
-	//agency.client.AskForWinners(agency.client.config.ID, signalChannel)
+	agency.client.AskForWinners(agency.client.config.ID, signalChannel)
 	return &agency
 }

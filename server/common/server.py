@@ -20,9 +20,15 @@ class Server:
         self._server_socket.listen(listen_backlog)
         self.__init_sign_handling()
         self._childs_processses = []
-        self._processes_manager = multiprocessing.Manager()
-        self._lottery = NationalLottery(self._processes_manager.Lock(), self._processes_manager.Lock())
-
+        processes_manager = multiprocessing.Manager()
+        self._lottery = NationalLottery(
+            processes_manager.Lock(), 
+            processes_manager.Lock(),
+            processes_manager.dict({
+                'agencies_ended': [],
+                'all_agencies_ended': False
+            })
+        )
     """
     Inicialización de manejo de señales
     """
