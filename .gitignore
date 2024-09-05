@@ -6,3 +6,8 @@ bin/
 
 # Docker-compose
 docker-compose-dev.yaml
+
+# Config
+client/config.yaml
+server/config.ini
+
