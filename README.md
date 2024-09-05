@@ -43,3 +43,18 @@ make docker-compose-logs
 ```
 make docker-compose-down
 ```
+
+## Tests (para el alumno)
+
+Máquina del trabajo:
+
+Sin logs
+```
+REPO_PATH=/home/putaro/Workspace/tp0 pytest
+```
+Con logs:
+Sin logs
+```
+REPO_PATH=/home/putaro/Workspace/tp0 pytest -s
+```
+NOTA: Ha pasado el test.
