@@ -10,7 +10,7 @@ def do_generate_compose_fyle(args):
     file.write(HEADER)
     for client_id in range(0, int(args["clients"])):
         file.write(generate_client_code(client_id+1))
-    file.write(VALIDATE)
+    #file.write(VALIDATE)
     file.write(FOOTER)
     file.close()
 
