@@ -3,3 +3,6 @@
 
 # Executables
 bin/
+
+# Docker-compose
+docker-compose-dev.yaml
