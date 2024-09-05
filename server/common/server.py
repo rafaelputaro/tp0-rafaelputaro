@@ -26,7 +26,9 @@ class Server:
     Manejo de la señal
     """
     def __handle_a_signal(self, signal_number, _stack):
-        logging.info(f'action: {SIGNAL_HANDLER_ACTION} | signal_number: {signal_number}')
+        logging.info(f'action: {SIGNAL_HANDLER_ACTION} | result: success')
+        
+        #logging.info(f'action: {SIGNAL_HANDLER_ACTION} | signal_number: {signal_number}')
         self._server_socket.close()
         logging.debug(f'action: {CLOSE_SERVER_SOCKET_ACTION} | result: sucess')
         for socket in self.__clients_sockets:
