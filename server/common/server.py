@@ -30,10 +30,10 @@ class Server:
         
         #logging.info(f'action: {SIGNAL_HANDLER_ACTION} | signal_number: {signal_number}')
         self._server_socket.close()
-        logging.debug(f'action: {CLOSE_SERVER_SOCKET_ACTION} | result: sucess')
+        logging.debug(f'action: {CLOSE_SERVER_SOCKET_ACTION} | result: success')
         for socket in self.__clients_sockets:
             socket.close()
-            logging.debug(f'action: {CLOSE_SOCKET_ACTION} | result: sucess')
+            logging.debug(f'action: {CLOSE_SOCKET_ACTION} | result: success')
         sys.exit(0)
 
     def run(self):
