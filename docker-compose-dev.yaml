@@ -9,9 +9,6 @@ services:
       - LOGGING_LEVEL=DEBUG
     networks:
       - testing_net
-    volumes:
-      - ./config_files/config.ini:/config.ini:ro
-
   client1:
     container_name: client1
     image: client:latest
@@ -23,9 +20,17 @@ services:
       - testing_net
     depends_on:
       - server
-    volumes:
-      - ./config_files/config.yaml:/config.yaml:ro
-
+  client2:
+    container_name: client2
+    image: client:latest
+    entrypoint: /client
+    environment:
+      - CLI_ID=2
+      - CLI_LOG_LEVEL=DEBUG
+    networks:
+      - testing_net
+    depends_on:
+      - server
 networks:
   testing_net:
     ipam:

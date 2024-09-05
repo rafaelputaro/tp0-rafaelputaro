@@ -9,19 +9,23 @@ Modificar el cliente y el servidor para lograr que realizar cambios en el archiv
 
 ## Instrucciones:
 
-1) Iniciar el cliente y el servidor con docker-compose. Aquí se puede ver que lo único que hace es copiar los archivos de configuraicón dejando intactas las capas anteriores:
+1) Crear archivo docker-compose:
+```
+. generar-compose.sh docker-compose-dev.yaml <nro clientes>
+```
+2) Iniciar los clientes y el servidor con docker-compose. Aquí se puede ver que lo único que hace es copiar los archivos de configuración dejando intactas las capas anteriores:
 ```
 make docker-compose-up
 ```
-2) Comprobar que se crearon los contenedores:
+3) Comprobar que se crearon los contenedores:
 ```
 docker ps
 ```
-3) Observar el log. En este punto verificar que se están utilizando los puertos 12344 y modo DEBUG en vez 12345 y modo INFO:
+4) Observar el log. En este punto verificar que se están utilizando los puertos 12344 y modo DEBUG en vez 12345 y modo INFO:
 ```
 make docker-compose-logs
 ```
-4) Finalizar los contenedores en otra terminal:
+5) Finalizar los contenedores en otra terminal:
 ```
 make docker-compose-down
 ```
