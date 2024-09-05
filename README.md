@@ -11,19 +11,23 @@ Modificar servidor y cliente para que ambos sistemas terminen de forma _graceful
 
 Recomiendo el siguiente uso del programa:
 
-1)  Iniciar los clientes y el servidor con docker-compose:
+1) Generar el docker-compose con el 
+```
+. generar-compose.sh docker-compose-dev.yaml <cant clientes>
+```
+2)  Iniciar los clientes y el servidor con docker-compose:
 ```
 make docker-compose-up
 ```
-2) Comprobar que se creo el contenedor:
+3) Comprobar que se creo el contenedor:
 ```
 docker ps
 ```
-3) Observar el log donde se podrán verificar los log's de finalización ante una SIGTERM:
+4) Observar el log donde se podrán verificar los log's de finalización ante una SIGTERM:
 ```
 make docker-compose-logs
 ```
-4) Finalizar el contenedor en otra terminal:
+5) Finalizar el contenedor en otra terminal:
 ```
 make docker-compose-down
 ```
