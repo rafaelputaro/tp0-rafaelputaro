@@ -1,5 +1,5 @@
 #!/bin/bash
-URL=server
+URL="server"
 PORT="12345"
 OK_MESSAGE="action: test_echo_server | result: success"
 FAIL_MESSAGE="action: test_echo_server | result: fail"
