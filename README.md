@@ -36,8 +36,7 @@ Sin logs
 REPO_PATH=/home/putaro/Workspace/tp0 pytest
 ```
 Con logs:
-Sin logs
 ```
 REPO_PATH=/home/putaro/Workspace/tp0 pytest -s
 ```
-NOTA:
+NOTA: Paso el test.
