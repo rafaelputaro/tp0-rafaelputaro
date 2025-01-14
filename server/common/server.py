@@ -33,7 +33,6 @@ class Server:
     Inicialización de manejo de señales
     """
     def __init_sign_handling(self):
-        signal.signal(signal.SIGINT, self.__handle_a_signal)
         signal.signal(signal.SIGTERM, self.__handle_a_signal)
 
     """
